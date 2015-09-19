@@ -1,0 +1,74 @@
+<web-app id="WebApp_ID" version="2.4"
+    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+ 
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<!-- 这个文件是web应用的配置文件，它被称为部署描述符DD
+	同时，也被称作servlet上下文
+	 -->
+ 
+ <!-- 在最简单的Spring MVC应用程序中，控制器是唯一的你需要在Java web部署描述文件（即web.xml文件）
+ 	中配置的Servlet。Spring MVC控制器 ——通常称作Dispatcher Servlet，实现了前端控制器设计模式。
+ 	并且每个web请求必须通过它以便它能够管理整个请求的生命周期。
+
+	当一个web请求发送到Spring MVC应用程序，dispatcher servlet首先接收请求。
+	然后它组织那些在Spring web应用程序上下文配置的（例如实际请求处理控制器和视图解析器）
+	或者使用注解配置的组件，所有的这些都需要处理该请求。 -->
+ 
+    <display-name>Spring Web MVC Hello World Application</display-name>
+ 
+ <!-- 这里还可以定义一些自己需要的过滤器，监听器之类的，它们都是针对这个web的，所以，
+ 	需要在这里定义 -->
+ 
+    <servlet>
+    <!-- 默认将装载spring-servlet.xml中的定义，即bean的定义（一般使用自动扫描式
+    	定义），还需要定义各种扫描器
+    	前端控制器的作用是：
+    					根据配置文件创建Spring应用上下文环境
+    	 -->
+        <servlet-name>spring</servlet-name>
+            <servlet-class>
+                org.springframework.web.servlet.DispatcherServlet
+            </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+ 
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <!-- 重点内容：
+				这里定义了前端控制器，它会自动的去扫描xml文件来创建Spring的应用上下文，
+				即根据xml文件的定义来自动的扫描并注册Bean，那么，如果我在程序中引用了其他的
+				包里的java文件，而这个xml中又没有，就会造成一些Bean无法完成实例化（因为扫描是
+				根据包的定义来的），我们就需要加载其他的xml文件来创建更加完整的Spring环境，
+				我们需要的是一个监听器，它会自动的加载你所定义的xml文件，如果你没有说明那些xml
+				文件需要包含，那么，监听器（上下文加载器）会查找/WEB-INF/applicationContext.xml
+				这个Spring配置文件    
+     -->
+     <!-- 需要像这样使用这个上下文加载器 -->
+     <!-- 注意，如果配置了这个监听器，但是项目中没有对应的xml配置文件，或者说
+     		至少应该有一个applicationContext（在不配置参数context-param的情况下），如果没有
+    		 那么就会报错，具体原因不知道，经测试不行 -->
+     <listener>
+     	<listener-class>
+       		org.springframework.web.context.ContextLoaderListener
+       	</listener-class>
+     </listener> 
+	
+	<!-- 这样配置需要加载的那些Spring上下文文件 -->
+<!-- 	<context-param>
+         <param-name>contextConfigLocation</param-name>
+         <param-value>
+        	/WEB-INF/applicationContext.xml
+         </param-value>
+    </context-param> -->
+    
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+ 
+</web-app>
